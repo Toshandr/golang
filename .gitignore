@@ -1,0 +1,27 @@
+# Бинарники для программ и плагинов
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Тестовый бинарник, собранный с помощью go test -c
+*.test
+
+# Вывод утилиты go coverage
+*.out
+coverage.*
+*.coverprofile
+profile.cov
+
+# Файлы окружения
+.env
+.env.local
+
+# IDE
+.idea/
+.vscode/
+
+# ОС
+.DS_Store
+Thumbs.db
