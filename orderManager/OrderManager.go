@@ -2,7 +2,6 @@ package ordermanager
 
 import (
 	"manager/mainErrors"
-	_ "manager/mainErrors"
 	. "manager/order"
 )
 
@@ -28,7 +27,7 @@ func (m *OrderManager) addOrder(UserID int, Amount float64) (id int, err error) 
 }
 
 func (m *OrderManager) GetOrder(ID int) (o Order, err error) {
-	if ID < 0 {
+	if ID <= 0 {
 		return o, mainErrors.ErrorOrderIDLessZero
 	}
 	for i := 0; i < len(m.orders); i++ {
@@ -37,4 +36,40 @@ func (m *OrderManager) GetOrder(ID int) (o Order, err error) {
 		}
 	}
 	return o, mainErrors.ErrorOrderNotExists
+}
+
+func (m *OrderManager) DeleteOrder(ID int) (ok bool, err error) {
+	if ID <= 0 {
+		return false, mainErrors.ErrorOrderIDLessZero
+	}
+
+	flag := -1
+
+	for i, v := range m.orders {
+		if v.GetID() == ID {
+			flag = i
+		}
+	}
+	if flag == -1 {
+		return false, mainErrors.ErrorAmount // ошибку новую сделаю потом времени нет
+	}
+	firstPart := m.orders[0:flag]
+	secondPart := m.orders[flag+1:]
+
+	m.orders = append(firstPart, secondPart...)
+
+	return true, nil
+
+}
+
+func (m *OrderManager) GetUserOrders(UserID int) (ListOrders []Order, err error) {
+	if UserID <= 0 {
+		return ListOrders, mainErrors.ErrorUserID
+	}
+	for _, v := range m.orders {
+		if v.GetUserID() == UserID {
+			ListOrders = append(ListOrders, v)
+		}
+	}
+	return ListOrders, nil
 }

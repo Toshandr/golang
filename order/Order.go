@@ -39,13 +39,13 @@ func (o *Order) UpdateStatus(newStatus string) (ok bool, err error) {
 		if o.status == "new" {
 			return false, mainErrors.ErrorOldStatus
 		}
-		o.status = "paid"
+		o.status = "new"
 		return true, nil
-	case "canclled":
-		if o.status == "paid" {
+	case "cancelled":
+		if o.status == "cancelled" {
 			return false, mainErrors.ErrorOldStatus
 		}
-		o.status = "paid"
+		o.status = "cancelled"
 		return true, nil
 	}
 	return false, nil //изменить эту строку когда вернусь тут должен быть блок default и новая ошибка
