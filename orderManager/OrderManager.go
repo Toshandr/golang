@@ -10,6 +10,19 @@ type OrderManager struct {
 	nextID int //id след товара
 }
 
+func CreateManager() *OrderManager {
+	a := []Order{}
+	return &OrderManager{a, 1}
+}
+
+func CreateManagerFewOrders(orders ...Order) *OrderManager {
+	return &OrderManager{orders, len(orders) + 1}
+}
+
+func CreateManagerSliceOrders(orders []Order) *OrderManager {
+	return &OrderManager{orders, len(orders) + 1}
+}
+
 func (m *OrderManager) addOrder(UserID int, Amount float64) (id int, err error) {
 
 	if Amount <= 0 {
@@ -72,4 +85,42 @@ func (m *OrderManager) GetUserOrders(UserID int) (ListOrders []Order, err error)
 		}
 	}
 	return ListOrders, nil
+}
+
+func (m *OrderManager) UpdateStatus(newStatus string, id int) (ok bool, err error) {
+	if id <= 0 {
+		return false, mainErrors.ErrorOrderIDLessZero
+	}
+	indOrder := -1
+	for i, v := range m.orders {
+		if v.GetID() == id {
+			indOrder = i
+		}
+	}
+	if indOrder == -1 {
+		return false, mainErrors.ErrorOrderID
+	}
+	switch newStatus {
+	case "paid":
+		if m.orders[indOrder].GetStatus() == "paid" {
+			return false, mainErrors.ErrorOldStatus
+		}
+		m.orders[indOrder].SetStatus("paid")
+		return true, nil
+	case "new":
+		if m.orders[indOrder].GetStatus() == "new" {
+			return false, mainErrors.ErrorOldStatus
+		}
+		m.orders[indOrder].SetStatus("new")
+		return true, nil
+	case "cancelled":
+		if m.orders[indOrder].GetStatus() == "cancelled" {
+			return false, mainErrors.ErrorOldStatus
+		}
+		m.orders[indOrder].SetStatus("cancelled")
+		return true, nil
+
+	default:
+		return false, mainErrors.ErrorUnknownStatus //изменить эту строку когда вернусь тут должен быть блок default и новая ошибка
+	}
 }

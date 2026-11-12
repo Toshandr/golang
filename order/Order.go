@@ -1,7 +1,5 @@
 package order
 
-import "manager/mainErrors"
-
 type Order struct {
 	id     int
 	userID int
@@ -27,26 +25,6 @@ func (o *Order) GetStatus() string {
 	return o.status
 }
 
-func (o *Order) UpdateStatus(newStatus string) (ok bool, err error) {
-	switch newStatus {
-	case "paid":
-		if o.status == "paid" {
-			return false, mainErrors.ErrorOldStatus
-		}
-		o.status = "paid"
-		return true, nil
-	case "new":
-		if o.status == "new" {
-			return false, mainErrors.ErrorOldStatus
-		}
-		o.status = "new"
-		return true, nil
-	case "cancelled":
-		if o.status == "cancelled" {
-			return false, mainErrors.ErrorOldStatus
-		}
-		o.status = "cancelled"
-		return true, nil
-	}
-	return false, nil //изменить эту строку когда вернусь тут должен быть блок default и новая ошибка
+func (o *Order) SetStatus(newStatus string) {
+	o.status = newStatus
 }
